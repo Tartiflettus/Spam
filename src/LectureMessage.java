@@ -37,15 +37,39 @@ public class LectureMessage {
 		
 		String mot = null;
 		//lire chaque ligne jusqu'à la fin du fichier
-		while(sc.hasNext("[A-Za-z]+")) {
-			mot = sc.next("[A-Za-z]+");
-			mot = mot.trim(); //supprimer les espaces en début et fin de mot
-			mot = mot.toLowerCase(); //mettre en minuscules le mot potentiellement en majuscule
-			reponse.add(mot);
+		while(sc.hasNext()) {
+			mot = sc.next();
+			if(mot.length() > 3) { //ajouter le mot s'in n'est pas un mot outil
+				mot = mot.trim(); //supprimer les espaces en début et fin de mot
+				mot = mot.toLowerCase(); //mettre en minuscules le mot potentiellement en majuscule
+				reponse.add(mot);
+			}
+			
 		}
 		
 		sc.close();
 		return reponse.toArray(STR_ARRAY);
+	}
+	
+	
+	
+	/**
+	 * 
+	 * @param dico dictionnaire
+	 * @return un vecteur indiquant si les mots du dictionnaire sont dans le message donné
+	 */
+	public static boolean[] comparaisonDico(String[] dico, String[] msg) {
+		boolean[] presence = new boolean[dico.length];
+		
+		for(int i=0; i < msg.length; i++) {
+			for(int j=0; j < dico.length; j++) {
+				if(msg[i].equals(dico[j])) {
+					presence[j] = true;
+				}
+			}
+		}
+		
+		return presence;
 	}
 	
 	
