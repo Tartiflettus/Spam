@@ -19,8 +19,8 @@ public class Classifieur {
 	 * @param nombreSpam
 	 */
 	public void apprendre(String[] dico, int nombreHam, int nombreSpam) {
-		this.probaSpam = nombreSpam / (nombreHam + nombreSpam);
-		this.probaHam = 1 - probaSpam;
+		this.probaSpam = (double)nombreSpam / (double)(nombreHam + nombreSpam);
+		this.probaHam = 1. - probaSpam;
 		
 		// proba mot spam
 		for (int i = 0; i < nombreSpam; i++) {
@@ -31,6 +31,9 @@ public class Classifieur {
 					probaMotSpam[j]++;
 				}
 			}
+		}
+		for(int i=0; i < nombreSpam; i++) {
+			probaMotSpam[i] /= nombreSpam;
 		}
 		
 		// proba mot ham
@@ -44,9 +47,8 @@ public class Classifieur {
 			}
 		}
 		
-		double produit = 0;
-		for (int j = 0; j < dico.length - 1; j++) {
-			
+		for(int i=0; i < nombreHam; i++) {
+			probaMotSpam[i] /= nombreHam;
 		}
 	}
 
