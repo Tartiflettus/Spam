@@ -78,8 +78,7 @@ public class LectureMessage {
 	
 	
 	public static void main(String[] args) {
-		ChargerDictionnaire cd = new ChargerDictionnaire();
-		String[] dico = cd.chargerDictionnaire("res/dictionnaire1000en.txt");
+		String[] dico = ChargerDictionnaire.chargerDictionnaire("res/dictionnaire1000en.txt");
 		boolean[] presence = comparaisonDico(dico, lireMessage(new File("res/baseapp/ham/0.txt")));
 		for(int i=0; i < dico.length; i++) {
 			if(presence[i]) {

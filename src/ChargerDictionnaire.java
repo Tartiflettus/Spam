@@ -4,10 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class ChargerDictionnaire {
-	private ArrayList<String> dictionnaire;
 
 	public ChargerDictionnaire() {
-		dictionnaire = new ArrayList<>();
+	
 	}
 	
 	/**
@@ -15,7 +14,8 @@ public class ChargerDictionnaire {
 	 * @param texte
 	 * @return 
 	 */
-	public String[] chargerDictionnaire(String texte) {
+	public static String[] chargerDictionnaire(String texte) {
+		ArrayList<String> dictionnaire = new ArrayList<>();
 		BufferedReader br = null;
 		String[] dict = null;
 		try {
@@ -43,8 +43,7 @@ public class ChargerDictionnaire {
 	}
 	
 	public static void main(String[] args) {
-		ChargerDictionnaire cd = new ChargerDictionnaire();
-		String[] dict = cd.chargerDictionnaire("res/dictionnaire1000en.txt");
+		String[] dict = chargerDictionnaire("res/dictionnaire1000en.txt");
 		for (String s : dict)
 			System.out.println(s);
 	}

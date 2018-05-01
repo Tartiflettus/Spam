@@ -8,10 +8,13 @@ public class Classifieur {
 	private double probaHam;
 	private double[] probaMotHam;
 	
-	private static double EPSILON = 1;
+	private static double EPSILON = 1; //permet le lissage des parametres
 
-	public Classifieur() {
-
+	public Classifieur(String[] dico) {
+		probaSpam = 0;
+		probaMotSpam = new double[dico.length];
+		probaHam = 0;
+		probaMotHam = new double[dico.length];
 	}
 	
 	/**
@@ -81,6 +84,10 @@ public class Classifieur {
 		}
 		pHam += Math.log(1. - probaSpam);
 		
-		return pSpam >= pHam;
+		System.out.println("pSpam = " + pSpam);
+		System.out.println("pHam = " + pHam);
+		
+		return pSpam > pHam;
 	}
+
 }
