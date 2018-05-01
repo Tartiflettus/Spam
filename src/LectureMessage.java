@@ -20,4 +20,7 @@ public class LectureMessage {
 	public String[] lireMessage(File f) {
 		
 	}
+	
 }
+
+
