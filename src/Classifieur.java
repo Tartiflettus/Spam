@@ -23,8 +23,8 @@ public class Classifieur {
 	 * @param nombreHam
 	 * @param nombreSpam
 	 */
-	public void apprendre(String[] dico, int nombreHam, int nombreSpam) {
-		this.probaSpam = (double)nombreSpam / (double)(nombreHam + nombreSpam);
+	public void apprendre(String[] dico, int nombreSpam, int nombreHam) {
+		this.probaSpam = ((double)nombreSpam) / ((double)(nombreHam + nombreSpam));
 		this.probaHam = 1. - probaSpam;
 		
 		// proba mot spam
@@ -33,12 +33,12 @@ public class Classifieur {
 			boolean[] b = LectureMessage.comparaisonDico(dico, message);
 			for (int j = 0; j < dico.length; j++) {
 				if (b[j]) {
-					probaMotSpam[j]++;
+					probaMotSpam[j] += 1.;
 				}
 			}
 		}
-		for(int i=0; i < nombreSpam; i++) {
-			probaMotSpam[i] = (probaMotSpam[i] + EPSILON) / (nombreSpam + 2 * EPSILON);
+		for(int i=0; i < dico.length; i++) {
+			probaMotSpam[i] = ((double)(probaMotSpam[i] + EPSILON)) / ((double)(nombreSpam + 2 * EPSILON));
 		}
 		
 		// proba mot ham
@@ -47,13 +47,13 @@ public class Classifieur {
 			boolean[] b = LectureMessage.comparaisonDico(dico, message);
 			for (int j = 0; j < dico.length; j++) {
 				if (b[j]) {
-					probaMotHam[j]++;
+					probaMotHam[j] += 1.;
 				}
 			}
 		}
 		
-		for(int i=0; i < nombreHam; i++) {
-			probaMotHam[i] = (probaMotHam[i] + EPSILON) / (nombreHam + 2 * EPSILON);
+		for(int i=0; i < dico.length; i++) {
+			probaMotHam[i] = ((double)(probaMotHam[i] + EPSILON)) / ((double)(nombreHam + 2 * EPSILON));
 		}
 	}
 
@@ -66,7 +66,6 @@ public class Classifieur {
 	public boolean classifierSpam(boolean[] msg) {
 		//pour rendre le calcul faisable, au lieu de calculer un énorme produit de nombres très petits...
 		//... on calcule le log de ce produit, c'est à dire la somme des log des termes
-		
 		double pSpam = 0.;
 		for(int i=0; i < msg.length; i++) {
 			final double probaActu = Math.log(msg[i] ? probaMotSpam[i] : (1. - probaMotSpam[i]));
@@ -74,7 +73,7 @@ public class Classifieur {
 			pSpam += probaActu;
 		}
 		pSpam += Math.log(probaSpam);
-		
+
 		
 		double pHam = 0.;
 		for(int i=0; i < msg.length; i++) {
@@ -82,11 +81,9 @@ public class Classifieur {
 			
 			pHam += probaActu;
 		}
-		pHam += Math.log(1. - probaSpam);
+		pHam += Math.log(probaHam);
 		
-		System.out.println("pSpam = " + pSpam);
-		System.out.println("pHam = " + pHam);
-		
+		//System.out.println("pSpam : " + pSpam + " ; pHam : " + pHam);
 		return pSpam > pHam;
 	}
 

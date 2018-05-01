@@ -51,7 +51,7 @@ public class LectureMessage {
 		}
 		
 		sc.close();
-		return reponse.toArray(STR_ARRAY);
+		return reponse.toArray(new String[0]);
 	}
 	
 	

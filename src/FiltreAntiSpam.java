@@ -6,8 +6,8 @@ public class FiltreAntiSpam {
 		String[] dictionnaire = ChargerDictionnaire.chargerDictionnaire(dico);
 		Classifieur classifieur = new Classifieur(dictionnaire);
 		classifieur.apprendre(dictionnaire, 200, 200);
-		for (int i = 0; i < 10; i++) {
-			String[] message = LectureMessage.lireMessage(new File("res/baseapp/spam/" + i + ".txt"));
+		for (int i = 0; i < 100; i++) {
+			String[] message = LectureMessage.lireMessage(new File("res/basetest/spam/" + i + ".txt"));
 			boolean[] b = LectureMessage.comparaisonDico(dictionnaire, message);
 			System.out.println(classifieur.classifierSpam(b));
 		}
