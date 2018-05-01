@@ -1,0 +1,4 @@
+#fichiers ignorés
+bin
+bin/*
+
