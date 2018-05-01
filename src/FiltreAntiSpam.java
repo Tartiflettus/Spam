@@ -11,6 +11,7 @@ public class FiltreAntiSpam {
 			String[] message = LectureMessage.lireMessage(new File("res/basetest/spam/" + i + ".txt"));
 			boolean[] b = LectureMessage.comparaisonDico(dictionnaire, message);
 			
+			//Probabilite proba = classifieur.probaSpam(b);
 			boolean sp = classifieur.classifierSpam(b);
 			System.out.print("SPAM n°" + i + " détecté comme " + (sp ? "SPAM" : "HAM"));
 			if(sp) {
@@ -19,11 +20,13 @@ public class FiltreAntiSpam {
 				System.out.println(" : **ERREUR**");
 				nbErreursSpam++;
 			}
+			//System.out.println("P(Y=SPAM | X=x) = " + proba.spam + " ; P(Y=HAM | X=x) = " + proba.ham);
 		}
 		for (int i = 0; i < 200; i++) {
 			String[] message = LectureMessage.lireMessage(new File("res/basetest/ham/" + i + ".txt"));
 			boolean[] b = LectureMessage.comparaisonDico(dictionnaire, message);
 			
+			//Probabilite proba = classifieur.probaSpam(b);
 			boolean sp = classifieur.classifierSpam(b);
 			System.out.print("HAM n°" + i + " détecté comme " + (sp ? "SPAM" : "HAM"));
 			if(sp) {
@@ -32,6 +35,7 @@ public class FiltreAntiSpam {
 			}else {
 				System.out.println(" : OK");
 			}
+			//System.out.println("P(Y=SPAM | X=x) = " + proba.spam + " ; P(Y=HAM | X=x) = " + proba.ham);
 		}
 		
 		System.out.println("=====================================================================================");
