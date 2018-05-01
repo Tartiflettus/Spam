@@ -63,7 +63,7 @@ public class Classifieur {
 	 * @param msg message lu par LectureMessage, que l'on veut classifier
 	 * @return la probabilité que ce message soit un mail, ainsi que celle qu'il soit un ham
 	 */
-	public Probabilite ProbaSpam(boolean[] msg) {
+	public Probabilite probaSpam(boolean[] msg) {
 		//pour rendre le calcul faisable, au lieu de calculer un énorme produit de nombres très petits...
 		//... on calcule le log de ce produit, c'est à dire la somme des log des termes
 		double pSpam = 0.;
