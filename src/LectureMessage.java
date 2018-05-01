@@ -1,7 +1,5 @@
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -76,9 +74,18 @@ public class LectureMessage {
 	
 	public static void main(String[] args) {
 		try {
-			String[] msg = lireMessage(new File("res/baseapp/ham/0.txt"));
+			/*String[] msg = lireMessage(new File("res/baseapp/ham/0.txt"));
 			for(String s : msg) {
 				System.out.println(s);
+			}*/
+			
+			ChargerDictionnaire cd = new ChargerDictionnaire();
+			String[] dico = cd.chargerDictionnaire("res/dictionnaire1000en.txt");
+			boolean[] presence = comparaisonDico(dico, lireMessage(new File("res/baseapp/ham/0.txt")));
+			for(int i=0; i < dico.length; i++) {
+				if(presence[i]) {
+					System.out.println(dico[i]);
+				}
 			}
 		}
 		catch(IOException e) {
