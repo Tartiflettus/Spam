@@ -26,10 +26,15 @@ public class LectureMessage {
 	 * Transformer un fichier texte en tableau
 	 * @param f fichier dans lequel lire le message
 	 * @return Tableau contenant les mots du message (sans les mots de < 3 lettres) en minuscules
-	 * @throws FileNotFoundException 
 	 */
-	public static String[] lireMessage(File f) throws FileNotFoundException {
-		Scanner sc = new Scanner(f);
+	public static String[] lireMessage(File f) {
+		Scanner sc = null;
+		try {
+			sc = new Scanner(f);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		List<String> reponse = new LinkedList<>();
 		
@@ -73,25 +78,13 @@ public class LectureMessage {
 	
 	
 	public static void main(String[] args) {
-		try {
-			/*String[] msg = lireMessage(new File("res/baseapp/ham/0.txt"));
-			for(String s : msg) {
-				System.out.println(s);
-			}*/
-			
-			ChargerDictionnaire cd = new ChargerDictionnaire();
-			String[] dico = cd.chargerDictionnaire("res/dictionnaire1000en.txt");
-			boolean[] presence = comparaisonDico(dico, lireMessage(new File("res/baseapp/ham/0.txt")));
-			for(int i=0; i < dico.length; i++) {
-				if(presence[i]) {
-					System.out.println(dico[i]);
-				}
+		ChargerDictionnaire cd = new ChargerDictionnaire();
+		String[] dico = cd.chargerDictionnaire("res/dictionnaire1000en.txt");
+		boolean[] presence = comparaisonDico(dico, lireMessage(new File("res/baseapp/ham/0.txt")));
+		for(int i=0; i < dico.length; i++) {
+			if(presence[i]) {
+				System.out.println(dico[i]);
 			}
-		}
-		catch(IOException e) {
-			System.err.println("Impossible de lire le fichier");
-			e.printStackTrace(System.err);
-			System.exit(-1);
 		}
 	}
 	

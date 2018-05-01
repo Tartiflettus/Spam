@@ -13,6 +13,7 @@ public class ChargerDictionnaire {
 	/**
 	 * Permet de charger le dictionnaire texte
 	 * @param texte
+	 * @return 
 	 */
 	public String[] chargerDictionnaire(String texte) {
 		BufferedReader br = null;
