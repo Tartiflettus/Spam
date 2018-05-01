@@ -7,6 +7,8 @@ public class Classifieur {
 	
 	private double probaHam;
 	private double[] probaMotHam;
+	
+	private static double EPSILON = 1;
 
 	public Classifieur() {
 
@@ -33,7 +35,7 @@ public class Classifieur {
 			}
 		}
 		for(int i=0; i < nombreSpam; i++) {
-			probaMotSpam[i] /= nombreSpam;
+			probaMotSpam[i] = (probaMotSpam[i] + EPSILON) / (nombreSpam + 2 * EPSILON);
 		}
 		
 		// proba mot ham
@@ -48,7 +50,7 @@ public class Classifieur {
 		}
 		
 		for(int i=0; i < nombreHam; i++) {
-			probaMotSpam[i] /= nombreHam;
+			probaMotHam[i] = (probaMotHam[i] + EPSILON) / (nombreHam + 2 * EPSILON);
 		}
 	}
 
