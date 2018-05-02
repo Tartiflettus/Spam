@@ -109,7 +109,10 @@ public class FiltreAntiSpam {
 	}
 	
 	public static void main(String[] args) {
-		new FiltreAntiSpam(args[0], "res/dictionnaire1000en.txt", args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+		if (args[0].equals("null"))
+			new FiltreAntiSpam("res/dictionnaire1000en.txt", args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+		else
+			new FiltreAntiSpam(args[0], "res/dictionnaire1000en.txt", args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]));
 	}
 
 }
