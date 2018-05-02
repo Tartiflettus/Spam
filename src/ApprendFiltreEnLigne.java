@@ -7,6 +7,7 @@ public class ApprendFiltreEnLigne {
 		String[] dico = ChargerDictionnaire.chargerDictionnaire("res/dictionnaire1000en.txt");
 		boolean[] msg = LectureMessage.comparaisonDico(dico, LectureMessage.lireMessage(new File(message)));
 		
+		System.out.println("Modification du filtre '" + classifieur + "' par apprentissage sur le " + (estSpam ? "SPAM" : "HAM") + " '" + message + "'.");
 		cl.lisser(dico, msg, estSpam);
 		
 		cl.save(classifieur);
