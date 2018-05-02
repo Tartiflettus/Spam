@@ -101,10 +101,21 @@ public class Classifieur implements Serializable{
 		}
 		
 		
-		for(int i=0; i < dico.length; i++) {
-			probaMotSpam[i] = ((double)(nbSpamMotConstate[i] + (exemple[i] ? 1 : 0) + EPSILON)) / ((double)(nbSpamApprentissage + 2*EPSILON));
-			probaMotHam[i] = ((double)(nbHamMotConstate[i] + (exemple[i] ? 0 : 1) + EPSILON)) / ((double)(nbHamApprentissage + 2*EPSILON));
+		for (int i = 0; i < dico.length; i++) {
+			if (exemple[i] && estSpam) {
+				nbSpamMotConstate[i]++;
+			}
+			if(exemple[i] && !estSpam) {
+				nbHamMotConstate[i]++;
+			}
 		}
+		
+		for(int i=0; i < dico.length; i++) {
+			probaMotSpam[i] = ((double)(nbSpamMotConstate[i] + EPSILON)) / ((double)(nbSpamApprentissage + 2*EPSILON));
+			probaMotHam[i] = ((double)(nbHamMotConstate[i] + EPSILON)) / ((double)(nbHamApprentissage + 2*EPSILON));
+		}
+		
+		
 		
 		
 		this.probaSpam = ((double)nbSpamApprentissage) / ((double)(nbSpamApprentissage + nbHamApprentissage));

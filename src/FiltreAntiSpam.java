@@ -60,8 +60,8 @@ public class FiltreAntiSpam {
 		System.out.println("Erreur de test globale sur " + (nombreSpam + nombreHam) + " mails : " + ((double)(nbErreursSpam + nbErreursHam)) / ((double)(nombreSpam + nombreHam)) * 100 + " %");
 	}
 	
-	/*public static void main(String[] args) {
+	public static void main(String[] args) {
 		new FiltreAntiSpam("res/dictionnaire1000en.txt", args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-	}*/
+	}
 
 }
