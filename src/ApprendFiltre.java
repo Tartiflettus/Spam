@@ -5,6 +5,7 @@ public class ApprendFiltre {
 		Classifieur c = new Classifieur(dico);
 		System.out.println("Apprentissage sur " + nombreSpam + "spams et " + nombreHam + "hams ...");
 		c.apprendre(baseapp, nombreSpam, nombreHam);
+		c.save(classifieur);
 		System.out.println("Classifieur enregistré dans '" + classifieur + "'.");
 	}
 	
