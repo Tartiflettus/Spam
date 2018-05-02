@@ -64,7 +64,7 @@ public class Classifieur {
 	 * @return la probabilité que ce message soit un mail, ainsi que celle qu'il soit un ham
 	 * @deprecated non fonctionnelle. La formule utilisée est fausse
 	 */
-	@Deprecated
+	/*@Deprecated
 	public Probabilite probaSpam(boolean[] msg) {
 		//pour rendre le calcul faisable, au lieu de calculer un énorme produit de nombres très petits...
 		//... on calcule le log de ce produit, c'est à dire la somme des log des termes
@@ -92,7 +92,7 @@ public class Classifieur {
 				Math.exp(pSpam + Math.log(probaSpam) - pMsg),
 				Math.exp(pHam + Math.log(probaHam) - pMsg)
 				);
-	}
+	}*/
 	
 	
 	

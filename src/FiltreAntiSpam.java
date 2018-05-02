@@ -1,14 +1,30 @@
 import java.io.File;
+import java.util.Scanner;
 
 public class FiltreAntiSpam {
 	
-	public FiltreAntiSpam(String dico) {
+	public FiltreAntiSpam(String dico, String basetest, int nombreSpam, int nombreHam) {
+		// Chargement du dictionnaire
 		String[] dictionnaire = ChargerDictionnaire.chargerDictionnaire(dico);
+		
+		// Recuperation de la base d'apprentissage
+		Scanner sc = new Scanner(System.in);
+		System.out.print("Combien de SPAM dans la base d'apprentissage ? ");
+		int nbSpamApprentissage = sc.nextInt();
+		System.out.print("Combien de HAM dans la base d'apprentissage ? ");
+		int nbHamApprentissage = sc.nextInt();
+		
 		Classifieur classifieur = new Classifieur(dictionnaire);
-		classifieur.apprendre(dictionnaire, 200, 200);
+		
+		// Apprentissage
+		System.out.println("\nApprentissage ...\n");
+		classifieur.apprendre(dictionnaire, nbSpamApprentissage, nbHamApprentissage);
+		
+		// Classification
+		System.out.println("Test :");
 		int nbErreursSpam = 0, nbErreursHam = 0;
-		for (int i = 0; i < 100; i++) {
-			String[] message = LectureMessage.lireMessage(new File("res/basetest/spam/" + i + ".txt"));
+		for (int i = 0; i < nombreSpam; i++) {
+			String[] message = LectureMessage.lireMessage(new File(basetest + "/spam/" + i + ".txt"));
 			boolean[] b = LectureMessage.comparaisonDico(dictionnaire, message);
 			
 			//Probabilite proba = classifieur.probaSpam(b);
@@ -22,8 +38,8 @@ public class FiltreAntiSpam {
 			}
 			//System.out.println("P(Y=SPAM | X=x) = " + proba.spam + " ; P(Y=HAM | X=x) = " + proba.ham);
 		}
-		for (int i = 0; i < 200; i++) {
-			String[] message = LectureMessage.lireMessage(new File("res/basetest/ham/" + i + ".txt"));
+		for (int i = 0; i < nombreHam; i++) {
+			String[] message = LectureMessage.lireMessage(new File(basetest + "/ham/" + i + ".txt"));
 			boolean[] b = LectureMessage.comparaisonDico(dictionnaire, message);
 			
 			//Probabilite proba = classifieur.probaSpam(b);
@@ -38,14 +54,14 @@ public class FiltreAntiSpam {
 			//System.out.println("P(Y=SPAM | X=x) = " + proba.spam + " ; P(Y=HAM | X=x) = " + proba.ham);
 		}
 		
-		System.out.println("=====================================================================================");
-		System.out.println("Ratio d'erreurs sur les spams : " + ((double)nbErreursSpam) / 100.);
-		System.out.println("Ratio d'erreurs sur les hams : " + ((double)nbErreursHam) / 200.);
-		System.out.println("Ratio d'erreurs total : " + ((double)(nbErreursSpam + nbErreursHam)) / 300.);
+		System.out.println("=====================================================================================");	
+		System.out.println("Erreur de test sur les " + nombreSpam + " SPAM : " + ((double)nbErreursSpam) / 100. * 100 + " %");
+		System.out.println("Erreur de test sur les " + nombreHam + " HAM : " + ((double)nbErreursHam) / 200. * 100 + " %");
+		System.out.println("Erreur de test globale sur " + (nombreSpam + nombreHam) + " mails : " + ((double)(nbErreursSpam + nbErreursHam)) / 300 * 100 + " %");
 	}
 	
 	public static void main(String[] args) {
-		new FiltreAntiSpam("res/dictionnaire1000en.txt");
+		new FiltreAntiSpam("res/dictionnaire1000en.txt", args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]));
 	}
 
 }
