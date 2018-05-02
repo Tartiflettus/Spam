@@ -52,7 +52,7 @@ public class Classifieur implements Serializable{
 	 * @param nombreHam
 	 * @param nombreSpam
 	 */
-	public void apprendre(String[] dico, int nombreSpam, int nombreHam) {
+	public void apprendre(int nombreSpam, int nombreHam) {
 		this.nbSpamApprentissage = nombreSpam;
 		this.nbHamApprentissage = nombreHam;
 		
@@ -62,23 +62,23 @@ public class Classifieur implements Serializable{
 		// proba mot spam
 		for (int i = 0; i < nombreSpam; i++) {
 			String[] message = LectureMessage.lireMessage(new File("res/baseapp/spam/" + i + ".txt"));
-			boolean[] b = LectureMessage.comparaisonDico(dico, message);
-			for (int j = 0; j < dico.length; j++) {
+			boolean[] b = LectureMessage.comparaisonDico(dictionnaire, message);
+			for (int j = 0; j < dictionnaire.length; j++) {
 				if (b[j]) {
 					nbSpamMotConstate[j]++;
 					//probaMotSpam[j] += 1.;
 				}
 			}
 		}
-		for(int i=0; i < dico.length; i++) {
+		for(int i=0; i < dictionnaire.length; i++) {
 			probaMotSpam[i] = ((double)(nbSpamMotConstate[i] + EPSILON)) / ((double)(nombreSpam + 2 * EPSILON));
 		}
 		
 		// proba mot ham
 		for (int i = 0; i < nombreHam; i++) {
 			String[] message = LectureMessage.lireMessage(new File("res/baseapp/ham/" + i + ".txt"));
-			boolean[] b = LectureMessage.comparaisonDico(dico, message);
-			for (int j = 0; j < dico.length; j++) {
+			boolean[] b = LectureMessage.comparaisonDico(dictionnaire, message);
+			for (int j = 0; j < dictionnaire.length; j++) {
 				if (b[j]) {
 					nbHamMotConstate[j]++;
 					//probaMotHam[j] += 1.;
@@ -86,12 +86,55 @@ public class Classifieur implements Serializable{
 			}
 		}
 		
-		for(int i=0; i < dico.length; i++) {
+		for(int i=0; i < dictionnaire.length; i++) {
 			probaMotHam[i] = ((double)(nbHamMotConstate[i] + EPSILON)) / ((double)(nombreHam + 2 * EPSILON));
 		}
 	}
 	
-	
+	/**
+	 * Prend en plus de la méthode précèdente la base d'apprentissage en paramètre
+	 * @param basapp
+	 * @param nombreSpam
+	 * @param nombreHam
+	 */
+	public void apprendre(String baseapp, int nombreSpam, int nombreHam) {
+		this.nbSpamApprentissage = nombreSpam;
+		this.nbHamApprentissage = nombreHam;
+		
+		this.probaSpam = ((double)nombreSpam) / ((double)(nombreHam + nombreSpam));
+		this.probaHam = 1. - probaSpam;
+		
+		// proba mot spam
+		for (int i = 0; i < nombreSpam; i++) {
+			String[] message = LectureMessage.lireMessage(new File(baseapp + "/spam/" + i + ".txt"));
+			boolean[] b = LectureMessage.comparaisonDico(dictionnaire, message);
+			for (int j = 0; j < dictionnaire.length; j++) {
+				if (b[j]) {
+					nbSpamMotConstate[j]++;
+					//probaMotSpam[j] += 1.;
+				}
+			}
+		}
+		for(int i=0; i < dictionnaire.length; i++) {
+			probaMotSpam[i] = ((double)(nbSpamMotConstate[i] + EPSILON)) / ((double)(nombreSpam + 2 * EPSILON));
+		}
+		
+		// proba mot ham
+		for (int i = 0; i < nombreHam; i++) {
+			String[] message = LectureMessage.lireMessage(new File(baseapp + "/ham/" + i + ".txt"));
+			boolean[] b = LectureMessage.comparaisonDico(dictionnaire, message);
+			for (int j = 0; j < dictionnaire.length; j++) {
+				if (b[j]) {
+					nbHamMotConstate[j]++;
+					//probaMotHam[j] += 1.;
+				}
+			}
+		}
+		
+		for(int i=0; i < dictionnaire.length; i++) {
+			probaMotHam[i] = ((double)(nbHamMotConstate[i] + EPSILON)) / ((double)(nombreHam + 2 * EPSILON));
+		}
+	}
 	
 	public void lisser(String[] dico, boolean[] exemple, boolean estSpam) {
 		if(estSpam) {
@@ -190,29 +233,9 @@ public class Classifieur implements Serializable{
 	}
 	
 	public boolean classifierSpam(String message) {
-		//pour rendre le calcul faisable, au lieu de calculer un énorme produit de nombres très petits...
-		//... on calcule le log de ce produit, c'est à dire la somme des log des termes
 		String[] m = LectureMessage.lireMessage(new File(message));
 		boolean[] msg = LectureMessage.comparaisonDico(dictionnaire, m);
-		double pSpam = 0.;
-		for(int i=0; i < msg.length; i++) {
-			final double probaActu = Math.log(msg[i] ? probaMotSpam[i] : (1. - probaMotSpam[i]));
-			
-			pSpam += probaActu;
-		}
-		pSpam += Math.log(probaSpam);
-
-		
-		double pHam = 0.;
-		for(int i=0; i < msg.length; i++) {
-			final double probaActu = Math.log(msg[i] ? probaMotHam[i] : (1. - probaMotHam[i]));
-			
-			pHam += probaActu;
-		}
-		pHam += Math.log(probaHam);
-		
-		//System.out.println("pSpam : " + pSpam + " ; pHam : " + pHam);
-		return pSpam > pHam;
+		return classifierSpam(msg);
 	}
 	
 	
@@ -277,7 +300,7 @@ public class Classifieur implements Serializable{
 	public static void main(String[] args) {
 		String[] dict = ChargerDictionnaire.chargerDictionnaire("res/dictionnaire1000en.txt");
 		Classifieur cl = new Classifieur(dict);
-		cl.apprendre(dict, 400, 400);
+		cl.apprendre(400, 400);
 		for(int i=400; i < 500; i++) {
 			boolean[] msgSpam = LectureMessage.comparaisonDico(dict, LectureMessage.lireMessage(new File("res/baseapp/spam/" + i + ".txt")));
 			boolean[] msgHam = LectureMessage.comparaisonDico(dict, LectureMessage.lireMessage(new File("res/baseapp/ham/" + i + ".txt")));

@@ -18,7 +18,7 @@ public class FiltreAntiSpam {
 		
 		// Apprentissage
 		System.out.println("\nApprentissage ...\n");
-		classifieur.apprendre(dictionnaire, nbSpamApprentissage, nbHamApprentissage);
+		classifieur.apprendre(nbSpamApprentissage, nbHamApprentissage);
 		
 		// Classification
 		System.out.println("Test :");
@@ -58,6 +58,8 @@ public class FiltreAntiSpam {
 		System.out.println("Erreur de test sur les " + nombreSpam + " SPAM : " + ((double)nbErreursSpam) / ((double)nombreSpam) * 100 + " %");
 		System.out.println("Erreur de test sur les " + nombreHam + " HAM : " + ((double)nbErreursHam) / ((double)nombreHam) * 100 + " %");
 		System.out.println("Erreur de test globale sur " + (nombreSpam + nombreHam) + " mails : " + ((double)(nbErreursSpam + nbErreursHam)) / ((double)(nombreSpam + nombreHam)) * 100 + " %");
+	
+		sc.close();
 	}
 	
 	public static void main(String[] args) {
