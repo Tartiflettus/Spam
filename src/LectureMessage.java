@@ -1,9 +1,10 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Lire un message
@@ -37,17 +38,22 @@ public class LectureMessage {
 		}
 		
 		List<String> reponse = new LinkedList<>();
-		
-		String mot = null;
+		Pattern pat = Pattern.compile("[A-Za-z]+"); //regexp pour un mot
+
 		//lire chaque ligne jusqu'à la fin du fichier
-		while(sc.hasNext()) {
-			mot = sc.next();
-			if(mot.length() > 3) { //ajouter le mot s'in n'est pas un mot outil
-				mot = mot.trim(); //supprimer les espaces en début et fin de mot
-				mot = mot.toLowerCase(); //mettre en minuscules le mot potentiellement en majuscule
-				reponse.add(mot);
+		while(sc.hasNextLine()) {
+			String ligne = sc.nextLine();
+			Matcher mat = pat.matcher(ligne);
+			while(mat.find()) {
+				//extraire le mot trouvé dans la ligne
+				String mot = ligne.substring(mat.start(), mat.end());
+				if(mot.length() > 3) { //ajouter le mot s'in n'est pas un mot outil
+					//System.out.println(mot);
+					mot = mot.trim(); //supprimer les espaces en début et fin de mot
+					mot = mot.toLowerCase(); //mettre en minuscules le mot potentiellement en majuscule
+					reponse.add(mot);
+				}
 			}
-			
 		}
 		
 		sc.close();
