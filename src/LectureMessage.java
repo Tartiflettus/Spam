@@ -13,10 +13,6 @@ import java.util.regex.Pattern;
  */
 public class LectureMessage {
 	
-	/**
-	 * Nécessaire pour déduire le type d'un tableau (voir List<>.toArray)
-	 */
-	private static String[] STR_ARRAY = new String[0];
 
 	public LectureMessage() {
 		// TODO Auto-generated constructor stub
