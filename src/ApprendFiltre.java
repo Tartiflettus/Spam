@@ -7,5 +7,10 @@ public class ApprendFiltre {
 		c.apprendre(baseapp, nombreSpam, nombreHam);
 		System.out.println("Classifieur enregistré dans '" + classifieur + "'.");
 	}
+	
+	
+	public static void main(String[] args) {
+		new ApprendFiltre(args[0], args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+	}
 
 }
