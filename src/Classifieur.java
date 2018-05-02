@@ -1,6 +1,22 @@
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
-public class Classifieur {
+/**
+ * Classifieur, permettant de distinguer les spams des hams
+ * Serializable, pour pouvoir l'enregistrer et le lire facilement
+ * @author victor
+ *
+ */
+public class Classifieur implements Serializable{
+	
+	private int nbSpamApprentissage;
+	private int nbHamApprentissage;
 	
 	private double probaSpam;
 	private double[] probaMotSpam;
@@ -24,6 +40,9 @@ public class Classifieur {
 	 * @param nombreSpam
 	 */
 	public void apprendre(String[] dico, int nombreSpam, int nombreHam) {
+		this.nbSpamApprentissage = nombreSpam;
+		this.nbHamApprentissage = nombreHam;
+		
 		this.probaSpam = ((double)nombreSpam) / ((double)(nombreHam + nombreSpam));
 		this.probaHam = 1. - probaSpam;
 		
@@ -124,6 +143,59 @@ public class Classifieur {
 		
 		//System.out.println("pSpam : " + pSpam + " ; pHam : " + pHam);
 		return pSpam > pHam;
+	}
+	
+	
+	public void save(File f) {
+		try {
+			FileOutputStream fo = new FileOutputStream(f);
+			ObjectOutputStream oo = new ObjectOutputStream(fo);
+			oo.writeObject(this);
+		}
+		catch(IOException e) {
+			e.printStackTrace(System.err);
+		}
+	}
+	
+	public void save(String f) {
+		save(new File(f));
+	}
+	
+	
+	public static Classifieur load(File f) {
+		try {
+			FileInputStream fi = new FileInputStream(f);
+			ObjectInputStream oi = new ObjectInputStream(fi);
+			Classifieur cl = (Classifieur) oi.readObject();
+			
+			oi.close();
+			return cl;
+		}
+		catch(IOException | ClassNotFoundException e) {
+			e.printStackTrace(System.err);
+		}
+		
+		
+		return null;
+	}
+	
+	public static Classifieur load(String f) {
+		return load(new File(f));
+	}
+	
+	
+	
+	public static void main(String[] args) {
+		String[] dict = ChargerDictionnaire.chargerDictionnaire("res/dictionnaire1000en.txt");
+		Classifieur cl = new Classifieur(dict);
+		cl.apprendre(dict, 200, 200);
+		cl.save("classifieur.output");
+		cl = null;
+		cl = Classifieur.load("classifieur.output");
+		System.out.println("spam/ham: " + cl.nbSpamApprentissage + " ; " + cl.nbSpamApprentissage);
+		System.out.println("Première proba spam: " + cl.probaMotSpam[0]);
+		System.out.println("Première proba ham: " + cl.probaMotHam[0]);
+		System.out.println("epsilon: " + cl.EPSILON);
 	}
 
 }
