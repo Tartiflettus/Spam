@@ -1,6 +1,5 @@
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -14,6 +13,10 @@ import java.io.Serializable;
  *
  */
 public class Classifieur implements Serializable{
+
+	private static final long serialVersionUID = 8602373167325065733L;
+	
+	
 	
 	private int nbSpamApprentissage;
 	private int nbHamApprentissage;
@@ -155,6 +158,8 @@ public class Classifieur implements Serializable{
 			FileOutputStream fo = new FileOutputStream(f);
 			ObjectOutputStream oo = new ObjectOutputStream(fo);
 			oo.writeObject(this);
+			
+			oo.close();
 		}
 		catch(IOException e) {
 			e.printStackTrace(System.err);
