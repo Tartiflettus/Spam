@@ -25,12 +25,15 @@ public class Classifieur implements Serializable{
 	private double[] probaMotHam;
 	
 	private static double EPSILON = 1; //permet le lissage des parametres
+	
+	private String[] dictionnaire;
 
 	public Classifieur(String[] dico) {
 		probaSpam = 0;
 		probaMotSpam = new double[dico.length];
 		probaHam = 0;
 		probaMotHam = new double[dico.length];
+		this.dictionnaire = dico;
 	}
 	
 	/**
@@ -124,6 +127,32 @@ public class Classifieur implements Serializable{
 	public boolean classifierSpam(boolean[] msg) {
 		//pour rendre le calcul faisable, au lieu de calculer un énorme produit de nombres très petits...
 		//... on calcule le log de ce produit, c'est à dire la somme des log des termes
+		double pSpam = 0.;
+		for(int i=0; i < msg.length; i++) {
+			final double probaActu = Math.log(msg[i] ? probaMotSpam[i] : (1. - probaMotSpam[i]));
+			
+			pSpam += probaActu;
+		}
+		pSpam += Math.log(probaSpam);
+
+		
+		double pHam = 0.;
+		for(int i=0; i < msg.length; i++) {
+			final double probaActu = Math.log(msg[i] ? probaMotHam[i] : (1. - probaMotHam[i]));
+			
+			pHam += probaActu;
+		}
+		pHam += Math.log(probaHam);
+		
+		//System.out.println("pSpam : " + pSpam + " ; pHam : " + pHam);
+		return pSpam > pHam;
+	}
+	
+	public boolean classifierSpam(String message) {
+		//pour rendre le calcul faisable, au lieu de calculer un énorme produit de nombres très petits...
+		//... on calcule le log de ce produit, c'est à dire la somme des log des termes
+		String[] m = LectureMessage.lireMessage(new File(message));
+		boolean[] msg = LectureMessage.comparaisonDico(dictionnaire, m);
 		double pSpam = 0.;
 		for(int i=0; i < msg.length; i++) {
 			final double probaActu = Math.log(msg[i] ? probaMotSpam[i] : (1. - probaMotSpam[i]));
