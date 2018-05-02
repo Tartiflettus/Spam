@@ -40,11 +40,11 @@ public class LectureMessage {
 		while(sc.hasNextLine()) {
 			String ligne = sc.nextLine();
 			Matcher mat = pat.matcher(ligne);
+			//continuer tant que la ligne contient des mots
 			while(mat.find()) {
 				//extraire le mot trouvé dans la ligne
 				String mot = ligne.substring(mat.start(), mat.end());
 				if(mot.length() > 3) { //ajouter le mot s'in n'est pas un mot outil
-					//System.out.println(mot);
 					mot = mot.trim(); //supprimer les espaces en début et fin de mot
 					mot = mot.toLowerCase(); //mettre en minuscules le mot potentiellement en majuscule
 					reponse.add(mot);
@@ -59,7 +59,7 @@ public class LectureMessage {
 	
 	
 	/**
-	 * 
+	 * Compare un message avec un dictionnaire, et indique pour chaque mot du dictionnaire s'il est présent dans le message
 	 * @param dico dictionnaire
 	 * @return un vecteur indiquant si les mots du dictionnaire sont dans le message donné
 	 */
@@ -78,7 +78,9 @@ public class LectureMessage {
 	}
 	
 	
-	
+	/**
+	 * test
+	 */
 	public static void main(String[] args) {
 		String[] dico = ChargerDictionnaire.chargerDictionnaire("res/dictionnaire1000en.txt");
 		boolean[] presence = comparaisonDico(dico, lireMessage(new File("res/baseapp/ham/0.txt")));
