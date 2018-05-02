@@ -16,11 +16,12 @@ public class Classifieur implements Serializable{
 
 	private static final long serialVersionUID = 8602373167325065733L;
 	
-	
+	private int nbSpamMotConstate[];
+	private int nbHamMotConstate[];
 	
 	private int nbSpamApprentissage;
 	private int nbHamApprentissage;
-	
+		
 	private double probaSpam;
 	private double[] probaMotSpam;
 	
@@ -34,6 +35,10 @@ public class Classifieur implements Serializable{
 		probaMotSpam = new double[dico.length];
 		probaHam = 0;
 		probaMotHam = new double[dico.length];
+		nbSpamApprentissage = 0;
+		nbHamApprentissage = 0;
+		nbSpamMotConstate = new int[dico.length];
+		nbHamMotConstate = new int[dico.length];
 	}
 	
 	/**
@@ -55,12 +60,13 @@ public class Classifieur implements Serializable{
 			boolean[] b = LectureMessage.comparaisonDico(dico, message);
 			for (int j = 0; j < dico.length; j++) {
 				if (b[j]) {
-					probaMotSpam[j] += 1.;
+					nbSpamMotConstate[j]++;
+					//probaMotSpam[j] += 1.;
 				}
 			}
 		}
 		for(int i=0; i < dico.length; i++) {
-			probaMotSpam[i] = ((double)(probaMotSpam[i] + EPSILON)) / ((double)(nombreSpam + 2 * EPSILON));
+			probaMotSpam[i] = ((double)(nbSpamMotConstate[i] + EPSILON)) / ((double)(nombreSpam + 2 * EPSILON));
 		}
 		
 		// proba mot ham
@@ -69,14 +75,35 @@ public class Classifieur implements Serializable{
 			boolean[] b = LectureMessage.comparaisonDico(dico, message);
 			for (int j = 0; j < dico.length; j++) {
 				if (b[j]) {
-					probaMotHam[j] += 1.;
+					nbHamMotConstate[j]++;
+					//probaMotHam[j] += 1.;
 				}
 			}
 		}
 		
 		for(int i=0; i < dico.length; i++) {
-			probaMotHam[i] = ((double)(probaMotHam[i] + EPSILON)) / ((double)(nombreHam + 2 * EPSILON));
+			probaMotHam[i] = ((double)(nbHamMotConstate[i] + EPSILON)) / ((double)(nombreHam + 2 * EPSILON));
 		}
+	}
+	
+	
+	
+	public void lisser(String[] dico, boolean[] exemple, boolean estSpam) {
+		if(estSpam) {
+			this.nbSpamApprentissage++;
+		} else {
+			this.nbHamApprentissage++;
+		}
+		
+		
+		for(int i=0; i < dico.length; i++) {
+			probaMotSpam[i] = ((double)(nbSpamMotConstate[i] + (exemple[i] ? 1 : 0) + EPSILON)) / ((double)(nbSpamApprentissage + 2*EPSILON));
+			probaMotHam[i] = ((double)(nbHamMotConstate[i] + (exemple[i] ? 0 : 1) + EPSILON)) / ((double)(nbHamApprentissage + 2*EPSILON));
+		}
+		
+		
+		this.probaSpam = ((double)nbSpamApprentissage) / ((double)(nbSpamApprentissage + nbHamApprentissage));
+		this.probaHam = 1. - probaSpam;
 	}
 
 	
@@ -210,14 +237,31 @@ public class Classifieur implements Serializable{
 	public static void main(String[] args) {
 		String[] dict = ChargerDictionnaire.chargerDictionnaire("res/dictionnaire1000en.txt");
 		Classifieur cl = new Classifieur(dict);
-		cl.apprendre(dict, 200, 200);
-		cl.save("classifieur.output");
-		cl = null;
-		cl = Classifieur.load("classifieur.output");
-		System.out.println("spam/ham: " + cl.nbSpamApprentissage + " ; " + cl.nbSpamApprentissage);
-		System.out.println("Première proba spam: " + cl.probaMotSpam[0]);
-		System.out.println("Première proba ham: " + cl.probaMotHam[0]);
-		System.out.println("epsilon: " + cl.EPSILON);
+		cl.apprendre(dict, 400, 400);
+		for(int i=400; i < 500; i++) {
+			boolean[] msgSpam = LectureMessage.comparaisonDico(dict, LectureMessage.lireMessage(new File("res/baseapp/spam/" + i + ".txt")));
+			boolean[] msgHam = LectureMessage.comparaisonDico(dict, LectureMessage.lireMessage(new File("res/baseapp/ham/" + i + ".txt")));
+			
+			cl.lisser(dict, msgSpam, true);
+			cl.lisser(dict, msgHam, false);
+		}
+		int nbErreursSpam = 0, nbErreursHam = 0;
+		for(int i=0; i < 500; i++) {
+			boolean[] msgSpam = LectureMessage.comparaisonDico(dict, LectureMessage.lireMessage(new File("res/basetest/spam/" + i + ".txt")));
+			boolean[] msgHam = LectureMessage.comparaisonDico(dict, LectureMessage.lireMessage(new File("res/basetest/ham/" + i + ".txt")));
+			
+			if(!cl.classifierSpam(msgSpam)) {
+				nbErreursSpam++;
+			}
+			if(cl.classifierSpam(msgHam)) {
+				nbErreursHam++;
+			}
+		}
+		System.out.println("400 appris, 100 lissés");
+		System.out.println("=====================================================================================");	
+		System.out.println("Erreur de test sur les " + 500 + " SPAM : " + ((double)nbErreursSpam) / ((double)500) * 100 + " %");
+		System.out.println("Erreur de test sur les " + 500 + " HAM : " + ((double)nbErreursHam) / ((double)500) * 100 + " %");
+		System.out.println("Erreur de test globale sur " + 1000 + " mails : " + ((double)(nbErreursSpam + nbErreursHam)) / ((double)(1000)) * 100 + " %");
 	}
 
 }
