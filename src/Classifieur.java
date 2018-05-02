@@ -114,9 +114,7 @@ public class Classifieur implements Serializable{
 			probaMotSpam[i] = ((double)(nbSpamMotConstate[i] + EPSILON)) / ((double)(nbSpamApprentissage + 2*EPSILON));
 			probaMotHam[i] = ((double)(nbHamMotConstate[i] + EPSILON)) / ((double)(nbHamApprentissage + 2*EPSILON));
 		}
-		
-		
-		
+
 		
 		this.probaSpam = ((double)nbSpamApprentissage) / ((double)(nbSpamApprentissage + nbHamApprentissage));
 		this.probaHam = 1. - probaSpam;
