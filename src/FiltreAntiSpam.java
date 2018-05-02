@@ -57,7 +57,7 @@ public class FiltreAntiSpam {
 		System.out.println("=====================================================================================");	
 		System.out.println("Erreur de test sur les " + nombreSpam + " SPAM : " + ((double)nbErreursSpam) / ((double)nombreSpam) * 100 + " %");
 		System.out.println("Erreur de test sur les " + nombreHam + " HAM : " + ((double)nbErreursHam) / ((double)nombreHam) * 100 + " %");
-		System.out.println("Erreur de test globale sur " + (nombreSpam + nombreHam) + " mails : " + ((double)(nbErreursSpam + nbErreursHam)) / 300 * 100 + " %");
+		System.out.println("Erreur de test globale sur " + (nombreSpam + nombreHam) + " mails : " + ((double)(nbErreursSpam + nbErreursHam)) / ((double)(nombreSpam + nombreHam)) * 100 + " %");
 	}
 	
 	public static void main(String[] args) {
