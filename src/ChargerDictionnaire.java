@@ -22,7 +22,9 @@ public class ChargerDictionnaire {
 			br = new BufferedReader(new FileReader(texte));
 			String line;
 			while ((line = br.readLine()) != null) {
+				// Ne prend pas en compte les mots de moins de 3 lettres
 				if (line.length() > 3) {
+					// Met les mots en minuscule
 					line = line.toLowerCase();
 					dictionnaire.add(line);
 				}
@@ -34,6 +36,7 @@ public class ChargerDictionnaire {
 				try {
 					br.close();
 					dict = new String[dictionnaire.size()];
+					// Transforme de liste à tableau
 					dict = dictionnaire.toArray(dict);
 				} catch (IOException e) {
 					e.printStackTrace();
