@@ -146,6 +146,10 @@ public class Classifieur implements Serializable{
 	}
 	
 	
+	/**
+	 * Sauvegarder le classifieur dans un fichier
+	 * @param f fichier dans lequel sauvegarder le classifieur
+	 */
 	public void save(File f) {
 		try {
 			FileOutputStream fo = new FileOutputStream(f);
@@ -157,11 +161,19 @@ public class Classifieur implements Serializable{
 		}
 	}
 	
+	/**
+	 * Sauvegarder le classifieur dans un fichier
+	 * @param f fichier dans lequel sauvegarder le classifieur
+	 */
 	public void save(String f) {
 		save(new File(f));
 	}
 	
 	
+	/**
+	 * Lire le classifieur depuis un fichier
+	 * @param f fichier depuis lequel lire le classifieur
+	 */
 	public static Classifieur load(File f) {
 		try {
 			FileInputStream fi = new FileInputStream(f);
@@ -179,6 +191,11 @@ public class Classifieur implements Serializable{
 		return null;
 	}
 	
+	
+	/**
+	 * Lire le classifieur depuis un fichier
+	 * @param f fichier depuis lequel lire le classifieur
+	 */
 	public static Classifieur load(String f) {
 		return load(new File(f));
 	}
