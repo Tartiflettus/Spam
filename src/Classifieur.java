@@ -16,14 +16,14 @@ public class Classifieur implements Serializable{
 
 	private static final long serialVersionUID = 8602373167325065733L;
 	
-	private int nbSpamMotConstate[];
+	private int nbSpamMotConstate[]; //correspond aux n_j du sujet
 	private int nbHamMotConstate[];
 	
-	private int nbSpamApprentissage;
+	private int nbSpamApprentissage; //nombre de spams dans la base d'apprentissage
 	private int nbHamApprentissage;
 		
-	private double probaSpam;
-	private double[] probaMotSpam;
+	private double probaSpam; //probabilité à priori qu'un message soit un spam
+	private double[] probaMotSpam; //correspond aux b_j du sujet
 	
 	private double probaHam;
 	private double[] probaMotHam;
@@ -93,9 +93,9 @@ public class Classifieur implements Serializable{
 	
 	/**
 	 * Prend en plus de la méthode précèdente la base d'apprentissage en paramètre
-	 * @param basapp
-	 * @param nombreSpam
-	 * @param nombreHam
+	 * @param basapp chemin vers la base d'apprentissage
+	 * @param nombreSpam nombre de spams de la base
+	 * @param nombreHam nombre de hams de la base
 	 */
 	public void apprendre(String baseapp, int nombreSpam, int nombreHam) {
 		this.nbSpamApprentissage = nombreSpam;
@@ -136,14 +136,22 @@ public class Classifieur implements Serializable{
 		}
 	}
 	
+	
+	/**
+	 * Cette fonction est à utiliser sur une base qu'on a déjà apprise, elle permet d'apprendre un exemple de plus
+	 * @param dico dictionnaire
+	 * @param exemple vecteur booléen représentant le message exemple
+	 * @param estSpam indique si l'exemple est un spam
+	 */
 	public void lisser(String[] dico, boolean[] exemple, boolean estSpam) {
+		//mettre à jour le nombre de spams/hams
 		if(estSpam) {
 			this.nbSpamApprentissage++;
 		} else {
 			this.nbHamApprentissage++;
 		}
 		
-		
+		//mettre à jour les compteurs de mots constatés dans les spams/hams
 		for (int i = 0; i < dico.length; i++) {
 			if (exemple[i] && estSpam) {
 				nbSpamMotConstate[i]++;
@@ -153,12 +161,13 @@ public class Classifieur implements Serializable{
 			}
 		}
 		
+		//mettre à jour la probabilité que chaque mot soit dans un spam/ham
 		for(int i=0; i < dico.length; i++) {
 			probaMotSpam[i] = ((double)(nbSpamMotConstate[i] + EPSILON)) / ((double)(nbSpamApprentissage + 2*EPSILON));
 			probaMotHam[i] = ((double)(nbHamMotConstate[i] + EPSILON)) / ((double)(nbHamApprentissage + 2*EPSILON));
 		}
 
-		
+		//mettre à jour les probabilités à priori qu'un message soit un spam/ham
 		this.probaSpam = ((double)nbSpamApprentissage) / ((double)(nbSpamApprentissage + nbHamApprentissage));
 		this.probaHam = 1. - probaSpam;
 	}
@@ -229,9 +238,15 @@ public class Classifieur implements Serializable{
 		pHam += Math.log(probaHam);
 		
 		//System.out.println("pSpam : " + pSpam + " ; pHam : " + pHam);
-		return pSpam > pHam;
+		return pSpam > pHam; //un message est un spam si il y a plus de chance que s'en soit un plutôt qu'un ham
 	}
 	
+	
+	/**
+	 * Permet de classifier des messages comme des spams ou des hams
+	 * @param message chemin vers le message à classifier
+	 * @return true si le message est classifié en spam
+	 */
 	public boolean classifierSpam(String message) {
 		String[] m = LectureMessage.lireMessage(new File(message));
 		boolean[] msg = LectureMessage.comparaisonDico(dictionnaire, m);
@@ -297,6 +312,9 @@ public class Classifieur implements Serializable{
 	
 	
 	
+	/**
+	 * test
+	 */
 	public static void main(String[] args) {
 		String[] dict = ChargerDictionnaire.chargerDictionnaire("res/dictionnaire1000en.txt");
 		Classifieur cl = new Classifieur(dict);
